@@ -26,15 +26,29 @@ class RatesRemoteDataSource {
 
   /// Fetches rates for a specific historical [date].
   ///
-  /// Creates a per-call Dio instance with the date-templated base URL,
-  /// since the date is embedded in the hostname, not a path segment.
+  /// For today's date or if the historical date endpoint returns 404
+  /// (e.g. before today's static page build completes), falls back to [getLatestRates].
   ///
   /// Throws [DioException] on network/server errors.
   Future<RatesResponseModel> getHistoricalRates(DateTime date) async {
-    final baseUrl = ApiConstants.historicalBaseUrl(date);
-    final dio = DioFactory.createHistoricalDio(baseUrl);
-    final apiService = ApiService(dio);
-    final response = await apiService.getRates();
-    return RatesResponseModel.fromJson(response as Map<String, dynamic>);
+    final now = DateTime.now();
+    final isToday = date.year == now.year && date.month == now.month && date.day == now.day;
+
+    if (isToday) {
+      return getLatestRates();
+    }
+
+    try {
+      final baseUrl = ApiConstants.historicalBaseUrl(date);
+      final dio = DioFactory.createHistoricalDio(baseUrl);
+      final apiService = ApiService(dio);
+      final response = await apiService.getRates();
+      return RatesResponseModel.fromJson(response as Map<String, dynamic>);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return getLatestRates();
+      }
+      rethrow;
+    }
   }
 }
