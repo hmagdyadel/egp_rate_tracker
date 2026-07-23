@@ -11,15 +11,18 @@ import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_
 ///
 /// Features:
 /// - Fixed brand primary color (Indigo) line stroke & area gradient
+/// - Support for [isSkeleton] mode rendering a muted-gray placeholder curve
 /// - Minimal grid lines
 /// - Bottom titles labeled ONLY for first, last, min rate, and max rate points
 class RateDetailChart extends StatelessWidget {
   const RateDetailChart({
     super.key,
     required this.points,
+    this.isSkeleton = false,
   });
 
   final List<HistoricalRatePoint> points;
+  final bool isSkeleton;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +30,13 @@ class RateDetailChart extends StatelessWidget {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // ── Brand Primary Color (Indigo) ─────────────────────────────────────
-    final lineColor = isDark ? AppColors.primaryLight : AppColors.primary;
+    // ── Color Selection (Brand Indigo vs Muted Gray Skeleton) ─────────────
+    final Color lineColor;
+    if (isSkeleton) {
+      lineColor = isDark ? AppColors.dividerDark : AppColors.dividerLight;
+    } else {
+      lineColor = isDark ? AppColors.primaryLight : AppColors.primary;
+    }
 
     // ── Find Min & Max Points ────────────────────────────────────────────
     int minIndex = 0;
@@ -156,7 +164,7 @@ class RateDetailChart extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      lineColor.withValues(alpha: 0.35),
+                      lineColor.withValues(alpha: isSkeleton ? 0.20 : 0.35),
                       lineColor.withValues(alpha: 0.0),
                     ],
                   ),

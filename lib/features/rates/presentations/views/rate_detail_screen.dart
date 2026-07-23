@@ -9,7 +9,6 @@ import 'package:egp_rate_tracker/core/theme/app_colors.dart';
 import 'package:egp_rate_tracker/core/theme/app_spacing.dart';
 import 'package:egp_rate_tracker/core/theme/app_text_styles.dart';
 import 'package:egp_rate_tracker/core/widgets/error_view.dart';
-import 'package:egp_rate_tracker/core/widgets/loader.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/currency_rate.dart';
 
 import 'package:egp_rate_tracker/features/rates/presentations/cubit/detail_cubit.dart';
@@ -17,6 +16,7 @@ import 'package:egp_rate_tracker/features/rates/presentations/cubit/detail_state
 import 'package:egp_rate_tracker/features/rates/presentations/widgets/chart_range_selector.dart';
 import 'package:egp_rate_tracker/features/rates/presentations/widgets/rate_change_badge.dart';
 import 'package:egp_rate_tracker/features/rates/presentations/widgets/rate_detail_chart.dart';
+import 'package:egp_rate_tracker/features/rates/presentations/widgets/rate_detail_chart_skeleton.dart';
 import 'package:egp_rate_tracker/features/rates/presentations/widgets/rate_list_item.dart';
 
 /// Screen showing exchange rate details and multi-range trend chart for a currency.
@@ -199,21 +199,11 @@ class RateDetailScreen extends StatelessWidget {
                           state.when(
                             initial: (range) {
                               log('UI render: initial (range: $range)', name: 'RateDetailScreen');
-                              return const AspectRatio(
-                                aspectRatio: 1.6,
-                                child: Center(
-                                  child: Loader(),
-                                ),
-                              );
+                              return const RateDetailChartSkeleton();
                             },
                             loading: (range) {
                               log('UI render: loading (range: $range)', name: 'RateDetailScreen');
-                              return const AspectRatio(
-                                aspectRatio: 1.6,
-                                child: Center(
-                                  child: Loader(),
-                                ),
-                              );
+                              return const RateDetailChartSkeleton();
                             },
                             error: (message, range) {
                               log('UI render: error (range: $range, message: $message)', name: 'RateDetailScreen');

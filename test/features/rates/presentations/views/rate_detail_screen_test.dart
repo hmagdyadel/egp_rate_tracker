@@ -8,7 +8,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:egp_rate_tracker/core/widgets/loader.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/chart_range.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/currency_rate.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_point.dart';
@@ -16,6 +15,7 @@ import 'package:egp_rate_tracker/features/rates/presentations/cubit/detail_cubit
 import 'package:egp_rate_tracker/features/rates/presentations/cubit/detail_state.dart';
 import 'package:egp_rate_tracker/features/rates/presentations/views/rate_detail_screen.dart';
 import 'package:egp_rate_tracker/features/rates/presentations/widgets/rate_detail_chart.dart';
+import 'package:egp_rate_tracker/features/rates/presentations/widgets/rate_detail_chart_skeleton.dart';
 
 class MockDetailCubit extends MockCubit<DetailState> implements DetailCubit {}
 
@@ -108,7 +108,7 @@ void main() {
       await streamController.close();
     });
 
-    testWidgets('renders Loader placeholder when state is loading', (tester) async {
+    testWidgets('renders RateDetailChartSkeleton placeholder when state is loading', (tester) async {
       const loadingState = DetailState.loading(selectedRange: ChartRange.oneMonth);
       when(() => mockDetailCubit.state).thenReturn(loadingState);
       when(() => mockDetailCubit.stream).thenAnswer((_) => Stream.value(loadingState));
@@ -120,7 +120,7 @@ void main() {
         ),
       ));
 
-      expect(find.byType(Loader), findsOneWidget);
+      expect(find.byType(RateDetailChartSkeleton), findsOneWidget);
     });
   });
 }
