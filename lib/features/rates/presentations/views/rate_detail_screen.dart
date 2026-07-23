@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -197,16 +195,9 @@ class RateDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: AppSpacing.md),
                           state.when(
-                            initial: (range) {
-                              log('UI render: initial (range: $range)', name: 'RateDetailScreen');
-                              return const RateDetailChartSkeleton();
-                            },
-                            loading: (range) {
-                              log('UI render: loading (range: $range)', name: 'RateDetailScreen');
-                              return const RateDetailChartSkeleton();
-                            },
+                            initial: (range) => const RateDetailChartSkeleton(),
+                            loading: (range) => const RateDetailChartSkeleton(),
                             error: (message, range) {
-                              log('UI render: error (range: $range, message: $message)', name: 'RateDetailScreen');
                               return Padding(
                                 padding: const EdgeInsets.all(AppSpacing.lg),
                                 child: ErrorView(
@@ -221,7 +212,6 @@ class RateDetailScreen extends StatelessWidget {
                               );
                             },
                             success: (points, range) {
-                              log('UI render: success (range: $range, points: ${points.length})', name: 'RateDetailScreen');
                               return RateDetailChart(
                                 key: ValueKey(range),
                                 points: points,
