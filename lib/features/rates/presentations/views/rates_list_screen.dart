@@ -79,6 +79,7 @@ class RatesListScreen extends StatelessWidget {
                           final rate = rates[index];
                           return RateListItem(
                             rate: rate,
+                            index: index,
                             onTap: () {
                               Navigator.pushNamed(
                                 context,
