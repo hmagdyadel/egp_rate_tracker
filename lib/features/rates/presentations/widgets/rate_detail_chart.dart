@@ -81,6 +81,43 @@ class RateDetailChart extends StatelessWidget {
             maxY: maxY,
             minX: 0,
             maxX: (points.length - 1).toDouble(),
+            lineTouchData: LineTouchData(
+              enabled: true,
+              handleBuiltInTouches: true,
+              touchTooltipData: LineTouchTooltipData(
+                getTooltipColor: (spot) => isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+                tooltipBorder: BorderSide(
+                  color: isDark ? AppColors.dividerDark : AppColors.dividerLight,
+                  width: 1,
+                ),
+                tooltipRoundedRadius: 8,
+                tooltipPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                getTooltipItems: (touchedSpots) {
+                  return touchedSpots.map((spot) {
+                    final index = spot.x.toInt();
+                    final date = (index >= 0 && index < points.length)
+                        ? points[index].date
+                        : null;
+                    final formattedDate = date != null ? DateFormat('d/M').format(date) : '';
+                    final formattedRate = spot.y.toStringAsFixed(2);
+
+                    return LineTooltipItem(
+                      formattedDate.isNotEmpty
+                          ? '$formattedDate\n$formattedRate EGP'
+                          : '$formattedRate EGP',
+                      AppTextStyles.caption.copyWith(
+                        color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                      ),
+                    );
+                  }).toList();
+                },
+              ),
+            ),
             gridData: FlGridData(
               show: true,
               drawVerticalLine: false,
