@@ -14,6 +14,7 @@ import 'package:egp_rate_tracker/features/rates/domain/repositories/rates_reposi
 import 'package:egp_rate_tracker/features/rates/domain/usecases/get_cached_rates_use_case.dart';
 import 'package:egp_rate_tracker/features/rates/domain/usecases/get_historical_rates_use_case.dart';
 import 'package:egp_rate_tracker/features/rates/domain/usecases/get_latest_rates_use_case.dart';
+import 'package:egp_rate_tracker/features/rates/presentations/cubit/rates_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -66,5 +67,10 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<GetCachedRatesUseCase>(
     GetCachedRatesUseCase(getIt<RatesRepository>()),
+  );
+
+  // ── Cubits ────────────────────────────────────────────────────────────
+  getIt.registerFactory<RatesCubit>(
+    () => RatesCubit(getLatestRatesUseCase: getIt<GetLatestRatesUseCase>()),
   );
 }

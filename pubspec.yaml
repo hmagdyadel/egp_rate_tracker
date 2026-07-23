@@ -40,7 +40,7 @@ dependencies:
   fl_chart: ^0.70.2
 
   # Loading UI
-  shimmer: ^3.0.0
+  skeletonizer: ^1.4.3
 
 dev_dependencies:
   flutter_test:

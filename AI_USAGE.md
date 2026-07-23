@@ -24,7 +24,13 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Model returned:** Converted both entities to @freezed (no json annotations). Required `abstract class` keyword for Freezed 3.2+ mixin compatibility. build_runner, flutter analyze (0 issues), flutter test all pass.
 **Decision:** Accepted as-is.
 
-### Phase 3 — Data layer — 2026-07-23
+### Phase 3 — Data layer — 2026-07-23 (commit `25457be`)
 **Prompt:** Build Phase 3 data layer: RatesResponseModel (json_serializable), RatesMapper (rate inversion + change math in its own class), RatesRemoteDataSource, RatesLocalDataSource (Hive), RatesRepositoryImpl (offline-first: API → cache → fallback), ExceptionMapper (DioException → Failure), HiveService, wire everything into get_it. Historical rates already uses Future.wait for parallel fetches.
 **Model returned:** 8 new files across core/ and features/rates/data/. RatesResponseModel matches API shape. RatesMapper inverts rates (1/raw) and computes daily change. Repository fetches today+yesterday in parallel, caches, falls back to cache on error. DI wires: HiveService → Dio → ApiService → data sources → repository → use cases. Also bumped json_annotation ^4.9.0→^4.12.0 and added DioExceptionType.transformTimeout case.
 **Decision:** Accepted as-is. Verified: (1) locked in color mapping for Phase 4 where isPositiveChange (rate increased/EGP weakened) = RED and isNegativeChange = GREEN; (2) independently verified transformTimeout is a valid DioExceptionType in Dio 5.x.
+
+### Phase 4 — Module 1: Rates list — 2026-07-23
+**Prompt:** Build Phase 4 Module 1 Rates list: RatesState (Freezed: initial/loading/success/empty/error), RatesCubit calling GetLatestRatesUseCase, RatesListScreen with RefreshIndicator, RateListItem with tabular figures, avatar chip, localized strings, and RateChangeBadge soft-tinted pill using ▲/▼ glyphs and RED-for-isPositiveChange / GREEN-for-isNegativeChange mapping, shimmer skeleton loading rows on first load, centered ErrorView & EmptyView, tap navigation to detail route.
+**Model returned:** Created RatesState (freezed union), RatesCubit, ErrorView, EmptyView, RatesListShimmer, RateChangeBadge, RateListItem, RatesListScreen. Wired RatesCubit in GetIt and updated AppRouter. Applied theme tokens & easy_localization. Verified flutter analyze (0 issues) and flutter test (all pass).
+**Decision:** Edited — User requested two adjustments before approval: (1) Replaced `shimmer` package with `skeletonizer` (`skeletonizer: ^1.4.3`), wrapping `RateListItem` layouts with dummy data bones in `RatesListSkeleton`; (2) Refined `RateChangeBadge` with an explicit third neutral branch (`changeAbsolute == 0`) rendering a neutral gray pill with an em dash (`—`) glyph. All verified with 0 analysis issues and passing tests.
+

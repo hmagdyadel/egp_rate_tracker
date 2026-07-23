@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'routes.dart';
+import 'package:egp_rate_tracker/core/di/dependency_injection.dart';
+import 'package:egp_rate_tracker/core/router/routes.dart';
+import 'package:egp_rate_tracker/features/rates/presentations/cubit/rates_cubit.dart';
+import 'package:egp_rate_tracker/features/rates/presentations/views/rates_list_screen.dart';
 
 /// Handles named-route generation for the app.
 ///
@@ -12,7 +16,10 @@ class AppRouter {
     switch (settings.name) {
       case Routes.ratesList:
         return MaterialPageRoute(
-          builder: (_) => const _PlaceholderScreen(title: 'Rates List'),
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<RatesCubit>()..fetchRates(),
+            child: const RatesListScreen(),
+          ),
         );
 
       case Routes.rateDetail:
@@ -28,7 +35,7 @@ class AppRouter {
   }
 }
 
-/// Temporary placeholder — replaced in Phase 4/5 with real screens.
+/// Temporary placeholder — replaced in Phase 5 with real detail screen.
 class _PlaceholderScreen extends StatelessWidget {
   const _PlaceholderScreen({required this.title});
 
