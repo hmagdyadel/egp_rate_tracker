@@ -83,7 +83,7 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Model returned:** Generated high-resolution custom fintech app icon (`assets/images/app_icon.png`) and gold/indigo branding artwork (`assets/images/splash_logo.png`) using `generate_image`, generated native Android/iOS launcher icons via `flutter_launcher_icons`, configured native launch screens via `flutter_native_splash`, and built animated `SplashScreen` widget in `lib/features/splash/presentations/views/splash_screen.dart`. 49 unit/widget tests pass, 0 analysis issues.
 **Decision:** Accepted as-is.
 
-### Rate Card Animations — Continuous pulse & price update fade transitions — 2026-07-23 (commit `ebdbc7c`)
+### Rate Card Animations — Continuous pulse & price update fade transitions — 2026-07-23 (commit `9726f7c`)
 **Prompt:** Make the card that shows the dollar price to be shown as makes a fade-in fade-out with perfect animation.
 **Model returned:** Enhanced `RateListItem` with smooth entrance `FadeTransition` & `SlideTransition` animations, `AnimatedSwitcher` price update fade-in/out transitions, and custom primary highlight styling for the USD card.
 **Decision:** Edited — User requested refining the transition into a continuous repeating breathing/pulse effect where the card container scales smoothly down to `0.97` and returns to `1.0` in a continuous loop (`_pulseController.repeat(reverse: true)` using `Curves.easeInOut`).
