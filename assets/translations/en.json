@@ -10,7 +10,7 @@
   "egp_per_unit": "EGP per {code}",
   "last_updated": "Last updated: {date}",
   "daily_change": "Daily change",
-  "historical_chart_title": "7-Day Trend",
+  "historical_chart_title": "Historical Trend",
   "loading": "Loading…",
   "error_generic": "Something went wrong",
   "error_no_internet": "No internet connection",
@@ -20,5 +20,10 @@
   "retry": "Retry",
   "offline_banner": "You are offline",
   "online_banner": "Back online",
-  "pull_to_refresh": "Pull to refresh"
+  "pull_to_refresh": "Pull to refresh",
+  "range_7d": "7D",
+  "range_1m": "1M",
+  "range_6m": "6M",
+  "range_1y": "1Y",
+  "range_max": "Max"
 }

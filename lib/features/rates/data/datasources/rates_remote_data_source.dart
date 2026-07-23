@@ -29,13 +29,11 @@ class RatesRemoteDataSource {
     return RatesResponseModel.fromJson(response as Map<String, dynamic>);
   }
 
-  /// Fetches rates for a specific historical [date].
+  /// Fetches rates for a specific historical [date], or returns `null` if HTTP 404.
   ///
-  /// For today's date or if the historical date endpoint returns 404
-  /// (e.g. before today's static page build completes), falls back to [getLatestRates].
-  ///
-  /// Throws [DioException] on network/server errors.
-  Future<RatesResponseModel> getHistoricalRates(DateTime date) async {
+  /// For today's date, fetches via [getLatestRates].
+  /// Throws [DioException] on non-404 network/server errors.
+  Future<RatesResponseModel?> getHistoricalRatesOrNull(DateTime date) async {
     final now = DateTime.now();
     final isToday = date.year == now.year && date.month == now.month && date.day == now.day;
 
@@ -50,9 +48,20 @@ class RatesRemoteDataSource {
       return RatesResponseModel.fromJson(response as Map<String, dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        return getLatestRates();
+        return null;
       }
       rethrow;
     }
+  }
+
+  /// Fetches rates for a specific historical [date].
+  ///
+  /// For today's date or if the historical date endpoint returns 404
+  /// (e.g. before today's static page build completes), falls back to [getLatestRates].
+  ///
+  /// Throws [DioException] on network/server errors.
+  Future<RatesResponseModel> getHistoricalRates(DateTime date) async {
+    final model = await getHistoricalRatesOrNull(date);
+    return model ?? await getLatestRates();
   }
 }

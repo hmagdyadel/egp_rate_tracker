@@ -7,23 +7,19 @@ import 'package:egp_rate_tracker/core/theme/app_spacing.dart';
 import 'package:egp_rate_tracker/core/theme/app_text_styles.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_point.dart';
 
-/// 7-day historical exchange rate line chart using fl_chart.
+/// Historical exchange rate line chart using fl_chart.
 ///
 /// Features:
-/// - Curved line with smooth gradient fill fading to transparent
+/// - Fixed brand primary color (Indigo) line stroke & area gradient
 /// - Minimal grid lines
 /// - Bottom titles labeled ONLY for first, last, min rate, and max rate points
 class RateDetailChart extends StatelessWidget {
   const RateDetailChart({
     super.key,
     required this.points,
-    required this.isPositiveChange,
-    required this.isNegativeChange,
   });
 
   final List<HistoricalRatePoint> points;
-  final bool isPositiveChange;
-  final bool isNegativeChange;
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +27,8 @@ class RateDetailChart extends StatelessWidget {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // ── Color Selection ──────────────────────────────────────────────────
-    final Color lineColor;
-    if (isPositiveChange) {
-      lineColor = isDark ? AppColors.negativeDark : AppColors.negative;
-    } else if (isNegativeChange) {
-      lineColor = isDark ? AppColors.positiveDark : AppColors.positive;
-    } else {
-      lineColor = isDark ? AppColors.primaryLight : AppColors.primary;
-    }
+    // ── Brand Primary Color (Indigo) ─────────────────────────────────────
+    final lineColor = isDark ? AppColors.primaryLight : AppColors.primary;
 
     // ── Find Min & Max Points ────────────────────────────────────────────
     int minIndex = 0;
@@ -73,9 +62,9 @@ class RateDetailChart extends StatelessWidget {
       aspectRatio: 1.6,
       child: Padding(
         padding: const EdgeInsets.only(
-          right: AppSpacing.lg,
-          left: AppSpacing.sm,
-          top: AppSpacing.md,
+          left: 20,
+          right: 20,
+          top: AppSpacing.sm,
           bottom: AppSpacing.xs,
         ),
         child: LineChart(

@@ -10,7 +10,7 @@
   "egp_per_unit": "جنيه مصري لكل {code}",
   "last_updated": "آخر تحديث: {date}",
   "daily_change": "التغيير اليومي",
-  "historical_chart_title": "اتجاه ٧ أيام",
+  "historical_chart_title": "الاتجاه التاريخي",
   "loading": "جارٍ التحميل…",
   "error_generic": "حدث خطأ ما",
   "error_no_internet": "لا يوجد اتصال بالإنترنت",
@@ -20,5 +20,10 @@
   "retry": "إعادة المحاولة",
   "offline_banner": "أنت غير متصل",
   "online_banner": "عدت للاتصال",
-  "pull_to_refresh": "اسحب للتحديث"
+  "pull_to_refresh": "اسحب للتحديث",
+  "range_7d": "٧أيام",
+  "range_1m": "شهر",
+  "range_6m": "٦أشهر",
+  "range_1y": "سنة",
+  "range_max": "الكل"
 }

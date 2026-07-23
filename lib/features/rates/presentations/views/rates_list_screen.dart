@@ -62,7 +62,7 @@ class RatesListScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              'last_updated'.tr(args: [formattedTime]),
+                              'last_updated'.tr(namedArgs: {'date': formattedTime}),
                               style: AppTextStyles.caption.copyWith(
                                 color: theme.colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w500,

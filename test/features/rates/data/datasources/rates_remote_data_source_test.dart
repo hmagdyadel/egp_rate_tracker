@@ -61,5 +61,25 @@ void main() {
       verify(() => mockHistoricalApiService.getRates()).called(1);
       verify(() => mockLatestApiService.getRates()).called(1);
     });
+
+    test('getHistoricalRatesOrNull for past date returns null on 404 without calling getLatestRates', () async {
+      final dio404Exception = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badResponse,
+        response: Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 404,
+        ),
+      );
+
+      when(() => mockHistoricalApiService.getRates()).thenThrow(dio404Exception);
+
+      final pastDate = DateTime(2026, 7, 20);
+      final result = await dataSource.getHistoricalRatesOrNull(pastDate);
+
+      expect(result, isNull);
+      verify(() => mockHistoricalApiService.getRates()).called(1);
+      verifyNever(() => mockLatestApiService.getRates());
+    });
   });
 }

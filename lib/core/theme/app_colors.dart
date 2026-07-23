@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  // ── Brand / Primary ───────────────────────────────────────────────────
-  static const Color primary = Color(0xFF1A73E8);
-  static const Color primaryLight = Color(0xFF4A9AF5);
-  static const Color primaryDark = Color(0xFF1557B0);
+  // ── Brand / Primary (Modern Indigo) ───────────────────────────────────
+  static const Color primary = Color(0xFF4F46E5);
+  static const Color primaryLight = Color(0xFF818CF8);
+  static const Color primaryDark = Color(0xFF3730A3);
 
   // ── Semantic — change indicators ──────────────────────────────────────
   /// Used for positive rate changes (▲).

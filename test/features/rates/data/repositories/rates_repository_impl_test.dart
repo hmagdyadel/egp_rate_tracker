@@ -9,6 +9,7 @@ import 'package:egp_rate_tracker/features/rates/data/datasources/rates_remote_da
 import 'package:egp_rate_tracker/features/rates/data/models/rates_mapper.dart';
 import 'package:egp_rate_tracker/features/rates/data/models/rates_response_model.dart';
 import 'package:egp_rate_tracker/features/rates/data/repositories/rates_repository_impl.dart';
+import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_point.dart';
 
 class MockRatesRemoteDataSource extends Mock implements RatesRemoteDataSource {}
 class MockRatesLocalDataSource extends Mock implements RatesLocalDataSource {}
@@ -116,6 +117,35 @@ void main() {
       );
 
       verify(() => mockExceptionMapper.mapDioException(dioException)).called(1);
+    });
+
+    test('getHistoricalRates calls getHistoricalRatesOrNull and filters out null responses', () async {
+      final date1 = DateTime(2026, 7, 22);
+      final date2 = DateTime(2024, 1, 1); // 404 / null date
+
+      when(() => mockRemote.getHistoricalRatesOrNull(date1)).thenAnswer((_) async => tYesterdayModel);
+      when(() => mockRemote.getHistoricalRatesOrNull(date2)).thenAnswer((_) async => null);
+
+      final tPoint = HistoricalRatePoint(date: date1, rate: 50.0);
+      when(() => mockMapper.mapToHistoricalPoint(response: tYesterdayModel, currencyCode: 'usd'))
+          .thenReturn(tPoint);
+
+      final result = await repository.getHistoricalRates(
+        dates: [date1, date2],
+        currencyCode: 'usd',
+      );
+
+      expect(result, isA<ApiSuccess<List<HistoricalRatePoint>>>());
+      result.when(
+        success: (points) {
+          expect(points.length, equals(1));
+          expect(points.first, equals(tPoint));
+        },
+        onFailure: (_) => fail('Expected success'),
+      );
+
+      verify(() => mockRemote.getHistoricalRatesOrNull(date1)).called(1);
+      verify(() => mockRemote.getHistoricalRatesOrNull(date2)).called(1);
     });
   });
 }

@@ -2,10 +2,8 @@ import 'package:dio/dio.dart';
 
 import 'failure.dart';
 
-/// Maps raw exceptions to typed [Failure] subtypes.
-///
-/// Used by data sources and the repository to convert caught exceptions
-/// into domain-layer failures that can travel up through use cases to cubits.
+/// Maps raw exceptions to typed [Failure] subtypes with friendly UI messages
+/// and technical details reserved for developer logs.
 class ExceptionMapper {
   const ExceptionMapper();
 
@@ -16,34 +14,57 @@ class ExceptionMapper {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.transformTimeout:
-        return NetworkFailure('Connection timed out: ${e.message}');
+        return NetworkFailure(
+          'Connection timed out. Please try again.',
+          e.message,
+        );
 
       case DioExceptionType.connectionError:
-        return const NoInternetFailure();
+        return NoInternetFailure(
+          'No internet connection. Please check your network.',
+          e.message,
+        );
 
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        return ServerFailure('Server error (HTTP $statusCode)');
+        return ServerFailure(
+          'Server error. Please try again later.',
+          'HTTP $statusCode: ${e.message}',
+        );
 
       case DioExceptionType.cancel:
-        return const NetworkFailure('Request was cancelled');
+        return NetworkFailure(
+          'Request was cancelled.',
+          e.message,
+        );
 
       case DioExceptionType.badCertificate:
-        return const NetworkFailure('Invalid SSL certificate');
+        return NetworkFailure(
+          'Secure connection failed.',
+          e.message,
+        );
 
       case DioExceptionType.unknown:
-        // Check if the underlying error suggests no connectivity
         if (e.error.toString().contains('SocketException') ||
             e.error.toString().contains('HandshakeException')) {
-          return const NoInternetFailure();
+          return NoInternetFailure(
+            'No internet connection. Please check your network.',
+            e.message ?? e.error?.toString(),
+          );
         }
-        return NetworkFailure('Unexpected network error: ${e.message}');
+        return NetworkFailure(
+          'Something went wrong. Please try again.',
+          e.message ?? e.error?.toString(),
+        );
     }
   }
 
   /// Converts a generic exception to a [Failure].
   Failure mapException(Object e) {
     if (e is DioException) return mapDioException(e);
-    return NetworkFailure('Unexpected error: $e');
+    return NetworkFailure(
+      'Something went wrong. Please try again.',
+      e.toString(),
+    );
   }
 }

@@ -14,30 +14,61 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DetailState {
 
-
+ ChartRange get selectedRange;
+/// Create a copy of DetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DetailStateCopyWith<DetailState> get copyWith => _$DetailStateCopyWithImpl<DetailState>(this as DetailState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DetailState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DetailState&&(identical(other.selectedRange, selectedRange) || other.selectedRange == selectedRange));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,selectedRange);
 
 @override
 String toString() {
-  return 'DetailState()';
+  return 'DetailState(selectedRange: $selectedRange)';
 }
 
 
 }
 
 /// @nodoc
-class $DetailStateCopyWith<$Res>  {
-$DetailStateCopyWith(DetailState _, $Res Function(DetailState) __);
+abstract mixin class $DetailStateCopyWith<$Res>  {
+  factory $DetailStateCopyWith(DetailState value, $Res Function(DetailState) _then) = _$DetailStateCopyWithImpl;
+@useResult
+$Res call({
+ ChartRange selectedRange
+});
+
+
+
+
+}
+/// @nodoc
+class _$DetailStateCopyWithImpl<$Res>
+    implements $DetailStateCopyWith<$Res> {
+  _$DetailStateCopyWithImpl(this._self, this._then);
+
+  final DetailState _self;
+  final $Res Function(DetailState) _then;
+
+/// Create a copy of DetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? selectedRange = null,}) {
+  return _then(_self.copyWith(
+selectedRange: null == selectedRange ? _self.selectedRange : selectedRange // ignore: cast_nullable_to_non_nullable
+as ChartRange,
+  ));
+}
+
 }
 
 
@@ -128,13 +159,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<HistoricalRatePoint> points)?  success,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( ChartRange selectedRange)?  initial,TResult Function( ChartRange selectedRange)?  loading,TResult Function( List<HistoricalRatePoint> points,  ChartRange selectedRange)?  success,TResult Function( String message,  ChartRange selectedRange)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Success() when success != null:
-return success(_that.points);case _Error() when error != null:
-return error(_that.message);case _:
+return initial(_that.selectedRange);case _Loading() when loading != null:
+return loading(_that.selectedRange);case _Success() when success != null:
+return success(_that.points,_that.selectedRange);case _Error() when error != null:
+return error(_that.message,_that.selectedRange);case _:
   return orElse();
 
 }
@@ -152,13 +183,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<HistoricalRatePoint> points)  success,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ChartRange selectedRange)  initial,required TResult Function( ChartRange selectedRange)  loading,required TResult Function( List<HistoricalRatePoint> points,  ChartRange selectedRange)  success,required TResult Function( String message,  ChartRange selectedRange)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial();case _Loading():
-return loading();case _Success():
-return success(_that.points);case _Error():
-return error(_that.message);case _:
+return initial(_that.selectedRange);case _Loading():
+return loading(_that.selectedRange);case _Success():
+return success(_that.points,_that.selectedRange);case _Error():
+return error(_that.message,_that.selectedRange);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +206,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<HistoricalRatePoint> points)?  success,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( ChartRange selectedRange)?  initial,TResult? Function( ChartRange selectedRange)?  loading,TResult? Function( List<HistoricalRatePoint> points,  ChartRange selectedRange)?  success,TResult? Function( String message,  ChartRange selectedRange)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Success() when success != null:
-return success(_that.points);case _Error() when error != null:
-return error(_that.message);case _:
+return initial(_that.selectedRange);case _Loading() when loading != null:
+return loading(_that.selectedRange);case _Success() when success != null:
+return success(_that.points,_that.selectedRange);case _Error() when error != null:
+return error(_that.message,_that.selectedRange);case _:
   return null;
 
 }
@@ -193,71 +224,139 @@ return error(_that.message);case _:
 
 
 class _Initial implements DetailState {
-  const _Initial();
+  const _Initial({this.selectedRange = ChartRange.sevenDays});
   
 
+@override@JsonKey() final  ChartRange selectedRange;
 
-
+/// Create a copy of DetailState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.selectedRange, selectedRange) || other.selectedRange == selectedRange));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,selectedRange);
 
 @override
 String toString() {
-  return 'DetailState.initial()';
+  return 'DetailState.initial(selectedRange: $selectedRange)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$InitialCopyWith<$Res> implements $DetailStateCopyWith<$Res> {
+  factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
+@override @useResult
+$Res call({
+ ChartRange selectedRange
+});
 
 
+
+
+}
+/// @nodoc
+class __$InitialCopyWithImpl<$Res>
+    implements _$InitialCopyWith<$Res> {
+  __$InitialCopyWithImpl(this._self, this._then);
+
+  final _Initial _self;
+  final $Res Function(_Initial) _then;
+
+/// Create a copy of DetailState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? selectedRange = null,}) {
+  return _then(_Initial(
+selectedRange: null == selectedRange ? _self.selectedRange : selectedRange // ignore: cast_nullable_to_non_nullable
+as ChartRange,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class _Loading implements DetailState {
-  const _Loading();
+  const _Loading({this.selectedRange = ChartRange.sevenDays});
   
 
+@override@JsonKey() final  ChartRange selectedRange;
 
-
+/// Create a copy of DetailState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.selectedRange, selectedRange) || other.selectedRange == selectedRange));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,selectedRange);
 
 @override
 String toString() {
-  return 'DetailState.loading()';
+  return 'DetailState.loading(selectedRange: $selectedRange)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$LoadingCopyWith<$Res> implements $DetailStateCopyWith<$Res> {
+  factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) _then) = __$LoadingCopyWithImpl;
+@override @useResult
+$Res call({
+ ChartRange selectedRange
+});
 
 
+
+
+}
+/// @nodoc
+class __$LoadingCopyWithImpl<$Res>
+    implements _$LoadingCopyWith<$Res> {
+  __$LoadingCopyWithImpl(this._self, this._then);
+
+  final _Loading _self;
+  final $Res Function(_Loading) _then;
+
+/// Create a copy of DetailState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? selectedRange = null,}) {
+  return _then(_Loading(
+selectedRange: null == selectedRange ? _self.selectedRange : selectedRange // ignore: cast_nullable_to_non_nullable
+as ChartRange,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class _Success implements DetailState {
-  const _Success(final  List<HistoricalRatePoint> points): _points = points;
+  const _Success(final  List<HistoricalRatePoint> points, {this.selectedRange = ChartRange.sevenDays}): _points = points;
   
 
  final  List<HistoricalRatePoint> _points;
@@ -267,10 +366,11 @@ class _Success implements DetailState {
   return EqualUnmodifiableListView(_points);
 }
 
+@override@JsonKey() final  ChartRange selectedRange;
 
 /// Create a copy of DetailState
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
+@override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
 
@@ -278,16 +378,16 @@ _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&const DeepCollectionEquality().equals(other._points, _points));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&const DeepCollectionEquality().equals(other._points, _points)&&(identical(other.selectedRange, selectedRange) || other.selectedRange == selectedRange));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_points));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_points),selectedRange);
 
 @override
 String toString() {
-  return 'DetailState.success(points: $points)';
+  return 'DetailState.success(points: $points, selectedRange: $selectedRange)';
 }
 
 
@@ -296,9 +396,9 @@ String toString() {
 /// @nodoc
 abstract mixin class _$SuccessCopyWith<$Res> implements $DetailStateCopyWith<$Res> {
   factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
-@useResult
+@override @useResult
 $Res call({
- List<HistoricalRatePoint> points
+ List<HistoricalRatePoint> points, ChartRange selectedRange
 });
 
 
@@ -315,10 +415,11 @@ class __$SuccessCopyWithImpl<$Res>
 
 /// Create a copy of DetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? points = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? points = null,Object? selectedRange = null,}) {
   return _then(_Success(
 null == points ? _self._points : points // ignore: cast_nullable_to_non_nullable
-as List<HistoricalRatePoint>,
+as List<HistoricalRatePoint>,selectedRange: null == selectedRange ? _self.selectedRange : selectedRange // ignore: cast_nullable_to_non_nullable
+as ChartRange,
   ));
 }
 
@@ -329,14 +430,15 @@ as List<HistoricalRatePoint>,
 
 
 class _Error implements DetailState {
-  const _Error(this.message);
+  const _Error(this.message, {this.selectedRange = ChartRange.sevenDays});
   
 
  final  String message;
+@override@JsonKey() final  ChartRange selectedRange;
 
 /// Create a copy of DetailState
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
+@override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$identity);
 
@@ -344,16 +446,16 @@ _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message)&&(identical(other.selectedRange, selectedRange) || other.selectedRange == selectedRange));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode => Object.hash(runtimeType,message,selectedRange);
 
 @override
 String toString() {
-  return 'DetailState.error(message: $message)';
+  return 'DetailState.error(message: $message, selectedRange: $selectedRange)';
 }
 
 
@@ -362,9 +464,9 @@ String toString() {
 /// @nodoc
 abstract mixin class _$ErrorCopyWith<$Res> implements $DetailStateCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
-@useResult
+@override @useResult
 $Res call({
- String message
+ String message, ChartRange selectedRange
 });
 
 
@@ -381,10 +483,11 @@ class __$ErrorCopyWithImpl<$Res>
 
 /// Create a copy of DetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,Object? selectedRange = null,}) {
   return _then(_Error(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
+as String,selectedRange: null == selectedRange ? _self.selectedRange : selectedRange // ignore: cast_nullable_to_non_nullable
+as ChartRange,
   ));
 }
 

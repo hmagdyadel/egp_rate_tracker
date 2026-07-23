@@ -7,6 +7,7 @@ import 'package:egp_rate_tracker/core/networking/api_result.dart';
 import 'package:egp_rate_tracker/features/rates/data/datasources/rates_local_data_source.dart';
 import 'package:egp_rate_tracker/features/rates/data/datasources/rates_remote_data_source.dart';
 import 'package:egp_rate_tracker/features/rates/data/models/rates_mapper.dart';
+import 'package:egp_rate_tracker/features/rates/data/models/rates_response_model.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_point.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/rates_result.dart';
 import 'package:egp_rate_tracker/features/rates/domain/repositories/rates_repository.dart';
@@ -72,12 +73,11 @@ class RatesRepositoryImpl implements RatesRepository {
     required String currencyCode,
   }) async {
     try {
-      // Fetch all dates in parallel for better perceived performance.
-      final responses = await Future.wait(
-        dates.map((date) => _remote.getHistoricalRates(date)),
-      );
+      // Fetch dates in batches of max 6 concurrent requests to prevent mobile socket timeouts.
+      final responses = await _fetchInBatches(dates, batchSize: 6);
 
       final points = responses
+          .whereType<RatesResponseModel>()
           .map((response) => _mapper.mapToHistoricalPoint(
                 response: response,
                 currencyCode: currencyCode,
@@ -94,6 +94,28 @@ class RatesRepositoryImpl implements RatesRepository {
       log('getHistoricalRates Exception: $e', name: 'RatesRepository');
       return ApiResult.failure(NetworkFailure('$e'));
     }
+  }
+
+  /// Fetches historical rate responses in concurrency-limited batches (6 at a time)
+  /// to avoid socket exhaustion or timeouts on real devices for 1M/6M/1Y/MAX queries.
+  Future<List<RatesResponseModel?>> _fetchInBatches(
+    List<DateTime> dates, {
+    int batchSize = 6,
+  }) async {
+    final results = <RatesResponseModel?>[];
+
+    for (var i = 0; i < dates.length; i += batchSize) {
+      final end = (i + batchSize < dates.length) ? i + batchSize : dates.length;
+      final chunk = dates.sublist(i, end);
+
+      final chunkResults = await Future.wait(
+        chunk.map((date) => _remote.getHistoricalRatesOrNull(date)),
+      );
+
+      results.addAll(chunkResults);
+    }
+
+    return results;
   }
 
   @override
