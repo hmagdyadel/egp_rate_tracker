@@ -39,7 +39,7 @@ class EgpRateTrackerApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       // Routing
-      initialRoute: Routes.ratesList,
+      initialRoute: Routes.splash,
       onGenerateRoute: appRouter.generateRoute,
       // Global offline connection banner wrapper
       builder: (context, child) => ConnectionBannerWrapper(child: child!),

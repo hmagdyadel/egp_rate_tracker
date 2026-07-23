@@ -78,6 +78,11 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Model returned:** Created `.github/workflows/ci.yml` triggering on push/pull_request to `main`/`master`, using `subosito/flutter-action@v2` with `cache: true`, running `flutter analyze` and `flutter test`. No build, code-signing, or deployment steps.
 **Decision:** Accepted as-is.
 
+### App Icon & Splash Screen — Native branding and animated splash — 2026-07-23 (commit `pending`)
+**Prompt:** Draw an app icon and use it, and draw a professional splash screen and use it.
+**Model returned:** Generated high-resolution custom fintech app icon (`assets/images/app_icon.png`) and gold/indigo branding artwork (`assets/images/splash_logo.png`) using `generate_image`, generated native Android/iOS launcher icons via `flutter_launcher_icons`, configured native launch screens via `flutter_native_splash`, and built animated `SplashScreen` widget in `lib/features/splash/presentations/views/splash_screen.dart`. 49 unit/widget tests pass, 0 analysis issues.
+**Decision:** Accepted as-is.
+
 
 
 

@@ -8,15 +8,22 @@ import 'package:egp_rate_tracker/features/rates/presentations/cubit/detail_cubit
 import 'package:egp_rate_tracker/features/rates/presentations/cubit/rates_cubit.dart';
 import 'package:egp_rate_tracker/features/rates/presentations/views/rate_detail_screen.dart';
 import 'package:egp_rate_tracker/features/rates/presentations/views/rates_list_screen.dart';
+import 'package:egp_rate_tracker/features/splash/presentations/views/splash_screen.dart';
 
 /// Handles named-route generation for the app.
 ///
-/// Two routes:
+/// Routes:
+/// - [Routes.splash] — initial animated branding screen
 /// - [Routes.ratesList] — the main currency list screen
 /// - [Routes.rateDetail] — the detail + chart screen for a single currency
 class AppRouter {
   Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routes.splash:
+        return MaterialPageRoute(
+          builder: (_) => const SplashScreen(),
+        );
+
       case Routes.ratesList:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
