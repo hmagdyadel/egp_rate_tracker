@@ -11,6 +11,7 @@ abstract class RatesState with _$RatesState {
   const factory RatesState.success({
     required List<CurrencyRate> rates,
     @Default(false) bool isRefreshing,
+    @Default(false) bool isFromCache,
   }) = _Success;
   const factory RatesState.empty() = _Empty;
   const factory RatesState.error(String message) = _Error;

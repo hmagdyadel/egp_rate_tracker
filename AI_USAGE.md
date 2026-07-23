@@ -34,9 +34,15 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Model returned:** Created RatesState (freezed union), RatesCubit, ErrorView, EmptyView, RatesListShimmer, RateChangeBadge, RateListItem, RatesListScreen. Wired RatesCubit in GetIt and updated AppRouter. Applied theme tokens & easy_localization. Verified flutter analyze (0 issues) and flutter test (all pass).
 **Decision:** Edited — User requested two adjustments before approval: (1) Replaced `shimmer` package with `skeletonizer` (`skeletonizer: ^1.4.3`), wrapping `RateListItem` layouts with dummy data bones in `RatesListSkeleton`; (2) Refined `RateChangeBadge` with an explicit third neutral branch (`changeAbsolute == 0`) rendering a neutral gray pill with an em dash (`—`) glyph. All verified with 0 analysis issues and passing tests.
 
-### Phase 5 — Module 2: Detail + chart — 2026-07-23
+### Phase 5 — Module 2: Detail + chart — 2026-07-23 (commit `6a35018`)
 **Prompt:** Build Phase 5 Module 2 Detail + chart: DetailState (Freezed: initial/loading/success/error), DetailCubit calling GetHistoricalRatesUseCase for last 7 days (generate dates chronologically starting from 6 days ago up to today), RateDetailScreen with header card (tabular-figure rate, RateChangeBadge, "as of {date}" caption) and fl_chart line chart (minimal gridlines, soft area-gradient fading to transparent, X-axis labels only for first/last/min/max points), Skeletonizer(enabled: true) loading state, ErrorView error state, route argument passing, DI & AppRouter wiring.
 **Model returned:** Created DetailState, DetailCubit, RateDetailChart, RateDetailScreen. Registered DetailCubit in GetIt and wired Routes.rateDetail in AppRouter passing CurrencyRate argument. Verified date generation logic (today - (6 - i) days), parallel fetch in repository, fl_chart styling, Skeletonizer loading, 0 analysis issues, and passing unit/widget tests.
 **Decision:** Edited — (1) Verified via live curl test that historical endpoints for today/future dates return 404 until published; added an `isToday` check & 404-catch fallback in `RatesRemoteDataSource.getHistoricalRates()` to route to `getLatestRates()`; (2) Confirmed detail header uses the passed-in `CurrencyRate` directly with no redundant network calls; (3) Confirmed null-argument guard in `AppRouter`'s `rateDetail` route is correctly handled.
+
+### Phase 6 — Module 3: Offline cache — 2026-07-23
+**Prompt:** Build Phase 6 Module 3 Offline cache: ConnectionBannerWrapper in main.dart wrapping MaterialApp using flutter_offline (red offline banner, green 2.5s reconnect banner), auto-trigger RatesCubit refresh on reconnect, RatesResult entity with isFromCache flag, RatesState.success(isFromCache: true) triggering a "last updated {time}" banner on RatesListScreen, repository fallback logic verification for offline first launch with empty cache.
+**Model returned:** Created RatesResult entity, ConnectionBannerWrapper. Updated RatesRepository, RatesRepositoryImpl, GetLatestRatesUseCase, GetCachedRatesUseCase, RatesState, RatesCubit, RatesListScreen, and main.dart. Verified first-launch offline scenario (returns Failure, renders ErrorView & red banner), auto-reconnect trigger, cache timestamp banner, 0 analysis issues, and passing unit/widget tests.
+**Decision:** Accepted as-is.
+
 
 

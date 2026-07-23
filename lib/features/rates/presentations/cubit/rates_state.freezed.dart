@@ -131,12 +131,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<CurrencyRate> rates,  bool isRefreshing)?  success,TResult Function()?  empty,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<CurrencyRate> rates,  bool isRefreshing,  bool isFromCache)?  success,TResult Function()?  empty,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Success() when success != null:
-return success(_that.rates,_that.isRefreshing);case _Empty() when empty != null:
+return success(_that.rates,_that.isRefreshing,_that.isFromCache);case _Empty() when empty != null:
 return empty();case _Error() when error != null:
 return error(_that.message);case _:
   return orElse();
@@ -156,12 +156,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<CurrencyRate> rates,  bool isRefreshing)  success,required TResult Function()  empty,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<CurrencyRate> rates,  bool isRefreshing,  bool isFromCache)  success,required TResult Function()  empty,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Success():
-return success(_that.rates,_that.isRefreshing);case _Empty():
+return success(_that.rates,_that.isRefreshing,_that.isFromCache);case _Empty():
 return empty();case _Error():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
@@ -180,12 +180,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<CurrencyRate> rates,  bool isRefreshing)?  success,TResult? Function()?  empty,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<CurrencyRate> rates,  bool isRefreshing,  bool isFromCache)?  success,TResult? Function()?  empty,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Success() when success != null:
-return success(_that.rates,_that.isRefreshing);case _Empty() when empty != null:
+return success(_that.rates,_that.isRefreshing,_that.isFromCache);case _Empty() when empty != null:
 return empty();case _Error() when error != null:
 return error(_that.message);case _:
   return null;
@@ -263,7 +263,7 @@ String toString() {
 
 
 class _Success implements RatesState {
-  const _Success({required final  List<CurrencyRate> rates, this.isRefreshing = false}): _rates = rates;
+  const _Success({required final  List<CurrencyRate> rates, this.isRefreshing = false, this.isFromCache = false}): _rates = rates;
   
 
  final  List<CurrencyRate> _rates;
@@ -274,6 +274,7 @@ class _Success implements RatesState {
 }
 
 @JsonKey() final  bool isRefreshing;
+@JsonKey() final  bool isFromCache;
 
 /// Create a copy of RatesState
 /// with the given fields replaced by the non-null parameter values.
@@ -285,16 +286,16 @@ _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&const DeepCollectionEquality().equals(other._rates, _rates)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&const DeepCollectionEquality().equals(other._rates, _rates)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.isFromCache, isFromCache) || other.isFromCache == isFromCache));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_rates),isRefreshing);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_rates),isRefreshing,isFromCache);
 
 @override
 String toString() {
-  return 'RatesState.success(rates: $rates, isRefreshing: $isRefreshing)';
+  return 'RatesState.success(rates: $rates, isRefreshing: $isRefreshing, isFromCache: $isFromCache)';
 }
 
 
@@ -305,7 +306,7 @@ abstract mixin class _$SuccessCopyWith<$Res> implements $RatesStateCopyWith<$Res
   factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
 @useResult
 $Res call({
- List<CurrencyRate> rates, bool isRefreshing
+ List<CurrencyRate> rates, bool isRefreshing, bool isFromCache
 });
 
 
@@ -322,10 +323,11 @@ class __$SuccessCopyWithImpl<$Res>
 
 /// Create a copy of RatesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? rates = null,Object? isRefreshing = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? rates = null,Object? isRefreshing = null,Object? isFromCache = null,}) {
   return _then(_Success(
 rates: null == rates ? _self._rates : rates // ignore: cast_nullable_to_non_nullable
 as List<CurrencyRate>,isRefreshing: null == isRefreshing ? _self.isRefreshing : isRefreshing // ignore: cast_nullable_to_non_nullable
+as bool,isFromCache: null == isFromCache ? _self.isFromCache : isFromCache // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

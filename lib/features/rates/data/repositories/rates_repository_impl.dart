@@ -7,17 +7,17 @@ import 'package:egp_rate_tracker/core/networking/api_result.dart';
 import 'package:egp_rate_tracker/features/rates/data/datasources/rates_local_data_source.dart';
 import 'package:egp_rate_tracker/features/rates/data/datasources/rates_remote_data_source.dart';
 import 'package:egp_rate_tracker/features/rates/data/models/rates_mapper.dart';
-import 'package:egp_rate_tracker/features/rates/domain/entities/currency_rate.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_point.dart';
+import 'package:egp_rate_tracker/features/rates/domain/entities/rates_result.dart';
 import 'package:egp_rate_tracker/features/rates/domain/repositories/rates_repository.dart';
 
 /// Offline-first implementation of [RatesRepository].
 ///
 /// Strategy:
 /// 1. Try fetching from the API (today + yesterday for change calculation).
-/// 2. On success → cache the responses, return mapped entities.
-/// 3. On failure → fall back to cached data if available.
-/// 4. If no cache either → return an explicit [Failure].
+/// 2. On success → cache responses in Hive, return `RatesResult(..., isFromCache: false)`.
+/// 3. On failure → fall back to cached data in Hive, return `RatesResult(..., isFromCache: true)`.
+/// 4. If no cache either → return an explicit [Failure] (e.g. [NoInternetFailure]).
 class RatesRepositoryImpl implements RatesRepository {
   RatesRepositoryImpl({
     required this._remote,
@@ -32,7 +32,7 @@ class RatesRepositoryImpl implements RatesRepository {
   final ExceptionMapper _exceptionMapper;
 
   @override
-  Future<ApiResult<List<CurrencyRate>>> getLatestRates() async {
+  Future<ApiResult<RatesResult>> getLatestRates() async {
     try {
       // Fetch today's and yesterday's rates in parallel.
       final yesterday = DateTime.now().subtract(const Duration(days: 1));
@@ -53,7 +53,10 @@ class RatesRepositoryImpl implements RatesRepository {
         yesterday: yesterdayModel,
       );
 
-      return ApiResult.success(rates);
+      return ApiResult.success(RatesResult(
+        rates: rates,
+        isFromCache: false,
+      ));
     } on DioException catch (e) {
       log('getLatestRates DioException: $e', name: 'RatesRepository');
       return _fallbackToCache() ?? ApiResult.failure(_exceptionMapper.mapDioException(e));
@@ -94,14 +97,14 @@ class RatesRepositoryImpl implements RatesRepository {
   }
 
   @override
-  Future<ApiResult<List<CurrencyRate>>> getCachedRates() async {
+  Future<ApiResult<RatesResult>> getCachedRates() async {
     final result = _fallbackToCache();
     return result ?? const ApiResult.failure(CacheFailure('No cached data available'));
   }
 
-  /// Attempts to build [CurrencyRate] entities from cached data.
-  /// Returns `null` if no cache is available.
-  ApiResult<List<CurrencyRate>>? _fallbackToCache() {
+  /// Attempts to build [RatesResult] from cached data in Hive.
+  /// Returns `null` if no valid cache is available.
+  ApiResult<RatesResult>? _fallbackToCache() {
     try {
       final cachedToday = _local.getCachedLatestRates();
       final cachedYesterday = _local.getCachedYesterdayRates();
@@ -113,7 +116,10 @@ class RatesRepositoryImpl implements RatesRepository {
         yesterday: cachedYesterday,
       );
 
-      return ApiResult.success(rates);
+      return ApiResult.success(RatesResult(
+        rates: rates,
+        isFromCache: true,
+      ));
     } on Exception catch (e) {
       log('Cache fallback failed: $e', name: 'RatesRepository');
       return null;

@@ -5,6 +5,7 @@ import 'core/bootstrap.dart';
 import 'core/router/app_router.dart';
 import 'core/router/routes.dart';
 import 'core/theme/app_theme.dart';
+import 'core/widgets/connection_banner_wrapper.dart';
 
 void main() async {
   await bootstrap();
@@ -40,6 +41,8 @@ class EgpRateTrackerApp extends StatelessWidget {
       // Routing
       initialRoute: Routes.ratesList,
       onGenerateRoute: appRouter.generateRoute,
+      // Global offline connection banner wrapper
+      builder: (context, child) => ConnectionBannerWrapper(child: child!),
     );
   }
 }

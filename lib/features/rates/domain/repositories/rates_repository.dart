@@ -1,6 +1,6 @@
 import 'package:egp_rate_tracker/core/networking/api_result.dart';
-import 'package:egp_rate_tracker/features/rates/domain/entities/currency_rate.dart';
 import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_point.dart';
+import 'package:egp_rate_tracker/features/rates/domain/entities/rates_result.dart';
 
 /// Contract for rate data access — implemented in the data layer.
 ///
@@ -9,13 +9,13 @@ import 'package:egp_rate_tracker/features/rates/domain/entities/historical_rate_
 abstract class RatesRepository {
   /// Fetches today's rates for the tracked currencies, including the
   /// daily change computed against yesterday's rates.
-  Future<ApiResult<List<CurrencyRate>>> getLatestRates();
+  ///
+  /// Returns [RatesResult] containing rates and an `isFromCache` boolean flag.
+  Future<ApiResult<RatesResult>> getLatestRates();
 
   /// Fetches historical rates for a single currency across multiple [dates].
   ///
   /// Used to build the 7-day trend chart on the detail screen.
-  /// Each date triggers a separate API call (the date is in the hostname),
-  /// but the repository should fetch them in parallel (`Future.wait`).
   Future<ApiResult<List<HistoricalRatePoint>>> getHistoricalRates({
     required List<DateTime> dates,
     required String currencyCode,
@@ -25,5 +25,5 @@ abstract class RatesRepository {
   ///
   /// Used as a fallback when the device is offline and no fresh data
   /// can be fetched.
-  Future<ApiResult<List<CurrencyRate>>> getCachedRates();
+  Future<ApiResult<RatesResult>> getCachedRates();
 }

@@ -17,7 +17,11 @@ class RatesCubit extends Cubit<RatesState> {
   Future<void> fetchRates({bool isRefresh = false}) async {
     if (isRefresh) {
       state.maybeWhen(
-        success: (rates, _) => emit(RatesState.success(rates: rates, isRefreshing: true)),
+        success: (rates, _, isFromCache) => emit(RatesState.success(
+          rates: rates,
+          isRefreshing: true,
+          isFromCache: isFromCache,
+        )),
         orElse: () => emit(const RatesState.loading()),
       );
     } else {
@@ -27,11 +31,15 @@ class RatesCubit extends Cubit<RatesState> {
     final result = await _getLatestRatesUseCase();
 
     result.when(
-      success: (rates) {
-        if (rates.isEmpty) {
+      success: (ratesResult) {
+        if (ratesResult.rates.isEmpty) {
           emit(const RatesState.empty());
         } else {
-          emit(RatesState.success(rates: rates, isRefreshing: false));
+          emit(RatesState.success(
+            rates: ratesResult.rates,
+            isRefreshing: false,
+            isFromCache: ratesResult.isFromCache,
+          ));
         }
       },
       onFailure: (failure) {
