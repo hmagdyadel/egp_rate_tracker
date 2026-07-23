@@ -23,3 +23,8 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Prompt:** User asked: would converting CurrencyRate and HistoricalRatePoint to @freezed classes instead of manual ==/hashCode be simpler? Only if it's a clean swap.
 **Model returned:** Converted both entities to @freezed (no json annotations). Required `abstract class` keyword for Freezed 3.2+ mixin compatibility. build_runner, flutter analyze (0 issues), flutter test all pass.
 **Decision:** Accepted as-is.
+
+### Phase 3 — Data layer — 2026-07-23
+**Prompt:** Build Phase 3 data layer: RatesResponseModel (json_serializable), RatesMapper (rate inversion + change math in its own class), RatesRemoteDataSource, RatesLocalDataSource (Hive), RatesRepositoryImpl (offline-first: API → cache → fallback), ExceptionMapper (DioException → Failure), HiveService, wire everything into get_it. Historical rates already uses Future.wait for parallel fetches.
+**Model returned:** 8 new files across core/ and features/rates/data/. RatesResponseModel matches API shape. RatesMapper inverts rates (1/raw) and computes daily change. Repository fetches today+yesterday in parallel, caches, falls back to cache on error. DI wires: HiveService → Dio → ApiService → data sources → repository → use cases. Also bumped json_annotation ^4.9.0→^4.12.0 and added DioExceptionType.transformTimeout case.
+**Decision:** Accepted as-is. Verified: (1) locked in color mapping for Phase 4 where isPositiveChange (rate increased/EGP weakened) = RED and isNegativeChange = GREEN; (2) independently verified transformTimeout is a valid DioExceptionType in Dio 5.x.
