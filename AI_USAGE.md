@@ -39,10 +39,16 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Model returned:** Created DetailState, DetailCubit, RateDetailChart, RateDetailScreen. Registered DetailCubit in GetIt and wired Routes.rateDetail in AppRouter passing CurrencyRate argument. Verified date generation logic (today - (6 - i) days), parallel fetch in repository, fl_chart styling, Skeletonizer loading, 0 analysis issues, and passing unit/widget tests.
 **Decision:** Edited — (1) Verified via live curl test that historical endpoints for today/future dates return 404 until published; added an `isToday` check & 404-catch fallback in `RatesRemoteDataSource.getHistoricalRates()` to route to `getLatestRates()`; (2) Confirmed detail header uses the passed-in `CurrencyRate` directly with no redundant network calls; (3) Confirmed null-argument guard in `AppRouter`'s `rateDetail` route is correctly handled.
 
-### Phase 6 — Module 3: Offline cache — 2026-07-23
+### Phase 6 — Module 3: Offline cache — 2026-07-23 (commit `c7c7198`)
 **Prompt:** Build Phase 6 Module 3 Offline cache: ConnectionBannerWrapper in main.dart wrapping MaterialApp using flutter_offline (red offline banner, green 2.5s reconnect banner), auto-trigger RatesCubit refresh on reconnect, RatesResult entity with isFromCache flag, RatesState.success(isFromCache: true) triggering a "last updated {time}" banner on RatesListScreen, repository fallback logic verification for offline first launch with empty cache.
 **Model returned:** Created RatesResult entity, ConnectionBannerWrapper. Updated RatesRepository, RatesRepositoryImpl, GetLatestRatesUseCase, GetCachedRatesUseCase, RatesState, RatesCubit, RatesListScreen, and main.dart. Verified first-launch offline scenario (returns Failure, renders ErrorView & red banner), auto-reconnect trigger, cache timestamp banner, 0 analysis issues, and passing unit/widget tests.
+**Decision:** Edited — (1) Confirmed offline→online reconnect refresh trigger uses a `_wasOffline` state guard so it fires only on genuine reconnect transitions and not on initial app launch; (2) Confirmed "last updated" timestamp banner comes from persisted `CurrencyRate.lastUpdated` (original snapshot date from Hive) rather than `DateTime.now()` at render time.
+
+### Phase 7 — Testing pass — 2026-07-23
+**Prompt:** Build Phase 7 test pass matching lib/ structure 1:1 using mocktail and bloc_test. Highest priority unit tests (RatesMapper, RatesRepositoryImpl, RatesRemoteDataSource, ExceptionMapper, 3 use cases), Cubit tests (RatesCubit, DetailCubit), and Widget tests (RateChangeBadge 3-branch glyphs, RatesListScreen 4 states). Deliberately skip coverage padding.
+**Model returned:** Created 10 unit, cubit, and widget test files under test/. Total test count: 33 tests across 11 suites. Bumped skeletonizer constraint to ^2.0.0 for Flutter SDK compatibility and updated Localizations in screen. All 33 tests pass, flutter analyze has 0 issues.
 **Decision:** Accepted as-is.
+
 
 
 

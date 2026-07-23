@@ -11,16 +11,21 @@ import 'package:egp_rate_tracker/features/rates/data/models/rates_response_model
 /// for historical requests — creates a new [ApiService] instance with
 /// a date-specific Dio for each historical call.
 class RatesRemoteDataSource {
-  RatesRemoteDataSource({required this._latestApiService});
+  RatesRemoteDataSource({
+    required this.latestApiService,
+    ApiService Function(String baseUrl)? historicalApiServiceFactory,
+  }) : _historicalApiServiceFactory = historicalApiServiceFactory ??
+            ((baseUrl) => ApiService(DioFactory.createHistoricalDio(baseUrl)));
 
-  final ApiService _latestApiService;
+  final ApiService latestApiService;
+  final ApiService Function(String baseUrl) _historicalApiServiceFactory;
 
   /// Fetches the latest rates.
   ///
   /// Throws [DioException] on network/server errors — the caller
   /// (repository) is responsible for catching and mapping to [Failure].
   Future<RatesResponseModel> getLatestRates() async {
-    final response = await _latestApiService.getRates();
+    final response = await latestApiService.getRates();
     return RatesResponseModel.fromJson(response as Map<String, dynamic>);
   }
 
@@ -40,8 +45,7 @@ class RatesRemoteDataSource {
 
     try {
       final baseUrl = ApiConstants.historicalBaseUrl(date);
-      final dio = DioFactory.createHistoricalDio(baseUrl);
-      final apiService = ApiService(dio);
+      final apiService = _historicalApiServiceFactory(baseUrl);
       final response = await apiService.getRates();
       return RatesResponseModel.fromJson(response as Map<String, dynamic>);
     } on DioException catch (e) {

@@ -37,7 +37,7 @@ class RatesListScreen extends StatelessWidget {
             success: (rates, isRefreshing, isFromCache) {
               final lastUpdatedDate = rates.isNotEmpty ? rates.first.lastUpdated : null;
               final formattedTime = lastUpdatedDate != null
-                  ? DateFormat.yMMMd(context.locale.languageCode).add_jm().format(lastUpdatedDate)
+                  ? DateFormat.yMMMd(Localizations.localeOf(context).languageCode).add_jm().format(lastUpdatedDate)
                   : '';
 
               return RefreshIndicator(
