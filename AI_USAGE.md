@@ -72,7 +72,7 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 - **Verification & Test Coverage:** Confirmed only the 4 bottom X-axis date labels shimmer-animate (`Skeletonizer` + `CustomPainter` technical limitation), while the chart curve sits static in neutral gray. Added `rate_detail_chart_skeleton_test.dart` (verifying `RateDetailChart` renders with `isSkeleton: true` and 7 dummy points) and updated `rate_detail_screen_test.dart` assertion to check `find.byType(RateDetailChartSkeleton)`.
 - **Debug Logs & Loader Cleanup:** Removed 4 leftover debug `log()` calls from `RateDetailScreen` `state.when(...)` view branches and deleted unused `lib/core/widgets/loader.dart` (`SpinKitThreeBounce`) & `flutter_spinkit` dependency.
 
-### CI setup — GitHub Actions analyze & test pipeline — 2026-07-23 (commit `e4e2f80`)
+### CI setup — GitHub Actions analyze & test pipeline — 2026-07-23 (commit `27ca8c1`)
 **Prompt:** Fill in the existing stub workflow file under `.github/workflows/` with a minimal, working GitHub Actions pipeline that sets up stable Flutter, runs `flutter pub get`, `flutter analyze`, and `flutter test`, with pub dependency caching.
 **Model returned:** Created `.github/workflows/ci.yml` triggering on push/pull_request to `main`/`master`, using `subosito/flutter-action@v2` with `cache: true`, running `flutter analyze` and `flutter test`. No build, code-signing, or deployment steps.
 **Decision:** Accepted as-is.
