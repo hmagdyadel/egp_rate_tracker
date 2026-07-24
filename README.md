@@ -1,475 +1,182 @@
 # EGP Rate Tracker
 
-A production-ready Flutter application for tracking the latest Egyptian Pound (EGP) exchange rates against multiple foreign currencies. The project demonstrates modern Flutter architecture, clean separation of concerns, offline-first capabilities, testability, localization, and maintainable code organization.
-
-> **Purpose:** This project was built as a technical assessment while following production-grade engineering practices rather than simply delivering the required features.
+A production-ready Flutter application for tracking live and historical Egyptian Pound (EGP) exchange rates against key foreign currencies (USD, EUR, GBP, SAR, JPY). Built with Clean Architecture, Cubit state management, offline-first caching, interactive multi-range historical charts, and full localization support.
 
 ---
 
-# Features
+## Screenshots / Demo
 
-### Exchange Rates
+*(Add screenshots or a screen recording demo here)*
 
-* View the latest EGP exchange rates.
-* Display currency code, currency name, and current exchange rate.
-* Calculate and display daily change (absolute and percentage).
-* Pull-to-refresh support.
-* Loading, empty, and error states.
-
-### Historical Data
-
-* View detailed information for each currency.
-* Interactive 7-day historical chart.
-* Loading shimmer while fetching historical data.
-* Friendly fallback UI when no historical data is available.
-
-### Offline-First Experience
-
-* Automatically caches the latest successful response.
-* Reads cached data when internet is unavailable.
-* Shows connection status using a floating connectivity banner.
-* Automatically refreshes data once connectivity is restored.
-* Displays the last successful update timestamp when using cached data.
-
-### Localization
-
-* English
-* Arabic (RTL support)
-
-### Theme Support
-
-* Light Theme
-* Dark Theme
-
-### Quality
-
-* Unit Tests
-* Cubit Tests
-* Widget Tests
-* GitHub Actions Continuous Integration
+- **Rates List Screen**: Displays live exchange rates against EGP with direction badges and USD primary pulse animation.
+- **Rate Detail Screen & Multi-Range Chart**: Interactive historical trend chart (`7D`, `1M`, `6M`, `1Y`, `MAX`) with high-contrast touch tooltips.
+- **Offline State & Cached Snapshot**: Floating `ConnectionBannerWrapper` status banner and snapshot timestamp bar when displaying cached Hive data.
+- **Shimmer Loading State**: `Skeletonizer` shimmer loading placeholders across rates list and chart views.
 
 ---
 
-# Architecture
+## Features
 
-The application follows **Clean Architecture** combined with **Feature-First Organization**, ensuring scalability, maintainability, and clear responsibility boundaries.
+- **Live Rates List**: Real-time EGP exchange rates for 5 major currencies (`USD`, `EUR`, `GBP`, `SAR`, `JPY`) with daily percentage & absolute rate change indicators (`▲` / `▼` / `—`).
+- **USD Highlight & Pulse Animation**: Continuous subtle breathing pulse animation (`ScaleTransition`) and primary accent styling for the USD card.
+- **Pull-to-Refresh**: Seamless list refresh updating latest exchange rates.
+- **Multi-Range Historical Chart**: Interactive `fl_chart` trend visualization supporting `7D`, `1M`, `6M`, `1Y`, and `MAX` date ranges with chunked API batching.
+- **Touch Tooltip**: High-contrast, theme-aware tooltip displaying formatted 2-decimal rate values and date labels on chart touch.
+- **Offline-First Caching**: Automatic local Hive storage fallback when offline, displaying a "Last updated: {date}" snapshot timestamp banner.
+- **Offline Reconnect Banner**: Global `ConnectionBannerWrapper` displaying connectivity status banners and triggering automatic auto-refresh on network reconnection.
+- **Resilient States**: Complete Loading (`Skeletonizer`), Error (`ErrorView` with retry), and Empty UI handling across all modules.
+- **Localization**: Full English and Arabic (RTL) localization via `easy_localization`.
+- **Light & Dark Theme**: Custom contrast-checked design system with modern Indigo primary branding (`AppColors.primary = #4F46E5`).
+
+---
+
+## Architecture
+
+The project strictly follows **Clean Architecture** combined with **Feature-First Folder Organization**:
 
 ```
-Presentation
-     │
-     ▼
-Domain (Entities + Use Cases)
-     │
-     ▼
-Repository
-     │
-     ▼
-Data Sources
- ┌──────────────┐
- │ Remote (API) │
- └──────────────┘
- ┌──────────────┐
- │ Local (Hive) │
- └──────────────┘
+lib/
+├── core/                   # Shared cross-cutting concerns (DI, Theme, Error, Router, Networking)
+├── features/
+│   ├── rates/              # Main currency rate domain & feature logic
+│   │   ├── data/           # Remote API (Retrofit/Dio), Local Storage (Hive), Mappers, Repositories
+│   │   ├── domain/         # Entities, Repository Interfaces, Use Cases
+│   │   └── presentations/  # Cubits, States (Freezed), Views, Widgets
+│   └── splash/             # Initial animated branding splash screen
 ```
 
-Each layer has a single responsibility:
-
-### Presentation
-
-Responsible for UI rendering and state management.
-
-* Cubit
-* Freezed States
-* Views
-* Reusable Widgets
-
-### Domain
-
-Contains pure business logic independent of Flutter or networking.
-
-* Entities
-* Repository Contracts
-* Use Cases
-
-### Data
-
-Responsible for retrieving and caching data.
-
-* Retrofit API
-* Dio Networking
-* Hive Local Storage
-* Repository Implementation
-* Data Mappers
+### Key Architectural Principles
+- **Domain Layer Isolation**: Pure Dart entities and use cases zero-dependent on Flutter UI, Dio, or Hive.
+- **State Management**: `Cubit` + immutable `Freezed` union states (`initial`, `loading`, `success`, `error`, `empty`) ensuring exhaustive UI branching with `state.when(...)`.
+- **Offline-First Repository Pattern**: Fetches remote API data → updates local Hive cache → returns data. On network or server failure, seamlessly falls back to cached Hive data.
 
 ---
 
-# Project Structure
+## Tech Stack
+
+Derived directly from `pubspec.yaml`:
+
+| Category | Package | Version |
+| :--- | :--- | :--- |
+| **Framework** | Flutter | `>=3.12.2` |
+| **State Management** | `flutter_bloc` | `^9.1.1` |
+| **Immutable Models** | `freezed_annotation` | `^3.0.0` |
+| **Dependency Injection** | `get_it` | `^8.0.3` |
+| **Networking** | `dio` / `retrofit` | `^5.8.0+1` / `^4.4.2` |
+| **Serialization** | `json_annotation` | `^4.12.0` |
+| **Local Storage** | `hive` / `hive_flutter` | `^2.2.3` / `^1.1.0` |
+| **Connectivity** | `flutter_offline` | `^4.0.0` |
+| **Charts** | `fl_chart` | `^0.70.2` |
+| **Loading Shimmer** | `skeletonizer` | `^2.0.0` |
+| **Localization** | `easy_localization` | `^3.0.7+1` |
+| **Testing** | `mocktail` / `bloc_test` | `^1.0.4` / `^10.0.0` |
+
+---
+
+## Project Structure
 
 ```
-lib
-│
-├── core
-│   ├── bootstrap
-│   ├── cache
-│   ├── di
-│   ├── error
-│   ├── l10n
-│   ├── networking
-│   ├── observer
-│   ├── router
-│   ├── theme
-│   └── widgets
-│
-├── features
-│   └── rates
-│       ├── data
-│       ├── domain
-│       └── presentation
-│
-└── main.dart
-```
-
-The project follows a **feature-first** structure where every feature encapsulates its presentation, domain, and data layers.
-
----
-
-# Tech Stack
-
-| Category             | Technology                        |
-| -------------------- | --------------------------------- |
-| Framework            | Flutter                           |
-| Language             | Dart                              |
-| State Management     | Cubit (flutter_bloc)              |
-| Immutable Models     | Freezed                           |
-| Dependency Injection | get_it                            |
-| Networking           | Dio                               |
-| REST Client          | Retrofit                          |
-| JSON Serialization   | json_serializable                 |
-| Local Database       | Hive                              |
-| Connectivity         | flutter_offline                   |
-| Charts               | fl_chart                          |
-| Localization         | easy_localization                 |
-| Loading UI           | shimmer                           |
-| Testing              | flutter_test, bloc_test, mocktail |
-| CI/CD                | GitHub Actions                    |
-
----
-
-# Design Principles
-
-The project follows several software engineering principles:
-
-* Clean Architecture
-* SOLID Principles
-* Dependency Inversion
-* Feature Isolation
-* Offline-First Strategy
-* Repository Pattern
-* Single Source of Truth
-* Separation of Concerns
-* Test-Driven Friendly Design
-* Immutable State Management
-
----
-
-# State Management
-
-The application uses **Cubit** from `flutter_bloc`.
-
-Each feature owns its own Cubit and immutable Freezed state.
-
-Typical state flow:
-
-```
-Initial
-
-↓
-
-Loading
-
-↓
-
-Success
-│
-├── Refreshing
-│
-└── Updated
-
-↓
-
-Error
-```
-
-This keeps UI logic predictable and easy to test.
-
----
-
-# Networking
-
-Networking is built using:
-
-* Dio
-* Retrofit
-* Typed API Responses
-* Generic ApiResult<T>
-* Failure Mapping
-* Centralized Exception Handling
-
-The networking layer never exposes raw exceptions outside the data layer.
-
----
-
-# Offline Strategy
-
-The application implements an **offline-first repository**.
-
-Workflow:
-
-```
-Fetch API
-      │
-      ▼
-Success
-      │
-      ▼
-Save to Hive
-      │
-      ▼
-Return Data
-
-If API Fails
-
-      ▼
-
-Read Cache
-
-      │
-
-Cache Exists
-      │
-      ▼
-Return Cached Data
-
-Otherwise
-
-Return Failure
-```
-
-This ensures the application remains usable without an internet connection whenever cached data is available.
-
----
-
-# Localization
-
-The application supports:
-
-* English
-* Arabic (RTL)
-
-All user-facing strings are localized using **easy_localization**.
-
-No hardcoded UI strings are used.
-
----
-
-# Theme
-
-The application provides:
-
-* Light Theme
-* Dark Theme
-
-Design tokens centralize:
-
-* Colors
-* Typography
-* Spacing
-* Border Radius
-
-This approach keeps styling consistent across the application.
-
----
-
-# Testing Strategy
-
-The project includes multiple testing layers.
-
-### Unit Tests
-
-* Data mappers
-* Repository
-* Use Cases
-* Utility functions
-
-### Cubit Tests
-
-* Loading states
-* Success states
-* Error states
-* Offline fallback
-* Refresh flow
-
-### Widget Tests
-
-* Rates list
-* Detail screen
-* Error UI
-* Empty UI
-* Loading UI
-
-The repository and Cubits are designed to be fully mockable.
-
----
-
-# Continuous Integration
-
-GitHub Actions automatically runs on every push and pull request.
-
-Pipeline includes:
-
-* Dependency installation
-* Static analysis
-* Unit tests
-* Widget tests
-
-This helps maintain code quality and prevents regressions.
-
----
-
-# Getting Started
-
-## Prerequisites
-
-* Flutter SDK (latest stable)
-* Dart SDK
-* Android Studio or VS Code
-* Git
-
----
-
-## Clone the Repository
-
-```bash
-git clone <repository-url>
-cd egp_rate_tracker
+.
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # GitHub Actions CI workflow (analyze + test)
+├── assets/
+│   ├── images/                # App icon & splash screen branding assets
+│   └── translations/          # en.json & ar.json localization files
+├── lib/
+│   ├── core/
+│   │   ├── bootstrap/         # App initialization & Hive setup
+│   │   ├── di/                # GetIt dependency injection setup
+│   │   ├── error/             # Failure hierarchy & ExceptionMapper
+│   │   ├── networking/        # DioFactory & ApiService (Retrofit)
+│   │   ├── router/            # AppRouter & Routes
+│   │   ├── theme/             # AppColors, AppSpacing, AppTextStyles, AppTheme
+│   │   └── widgets/           # ConnectionBannerWrapper, ErrorView, Skeleton
+│   ├── features/
+│   │   ├── rates/
+│   │   │   ├── data/          # Data sources, mappers, repository implementation
+│   │   │   ├── domain/        # Entities (CurrencyRate, HistoricalRatePoint, ChartRange), Use Cases
+│   │   │   └── presentations/ # Cubits (RatesCubit, DetailCubit), Views, Widgets
+│   │   └── splash/            # SplashScreen view & branding animation
+│   └── main.dart
+├── test/                      # Tests mirroring lib/ structure
+├── AI_USAGE.md                # End-to-end AI development log
+└── pubspec.yaml
 ```
 
 ---
 
-## Install Dependencies
+## Getting Started
 
-```bash
-flutter pub get
-```
+### Prerequisites
+- **Flutter SDK**: `>=3.12.2` (Stable channel)
+- **Dart SDK**: `>=3.0.0`
+- **Git**
 
----
+### Installation & Setup
 
-## Generate Code
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd egp_rate_tracker
+   ```
 
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
+2. **Install dependencies:**
+   ```bash
+   flutter pub get
+   ```
 
----
+3. **Run code generation (Freezed & Retrofit):**
+   ```bash
+   dart run build_runner build --delete-conflicting-outputs
+   ```
 
-## Run the Application
+4. **Run the app:**
+   ```bash
+   flutter run
+   ```
 
-```bash
-flutter run
-```
+5. **Run all tests:**
+   ```bash
+   flutter test
+   ```
 
----
-
-## Execute Tests
-
-```bash
-flutter test
-```
-
----
-
-## Static Analysis
-
-```bash
-flutter analyze
-```
-
----
-
-# Screenshots
-
-```
-README Assets/
-
-screenshots/
-├── rates_list.png
-├── details.png
-├── offline.png
-├── dark_mode.png
-
-gif/
-└── demo.gif
-```
-
-> Screenshots and demo GIF can be added once the implementation is complete.
+6. **Run static analysis:**
+   ```bash
+   flutter analyze
+   ```
 
 ---
 
-# AI Usage
+## API Reference
 
-This repository includes an **AI_USAGE.md** document that transparently records AI-assisted development throughout the implementation.
+This app consumes the free, public Currency Exchange Rate API (`currency-api.pages.dev`, no API key required):
 
-Each entry includes:
-
-* Development phase
-* Prompt provided
-* AI-generated response summary
-* Final engineering decision
-
-The document reflects the actual development timeline rather than retrospective documentation.
+- **Latest Rates Base URL**: `https://latest.currency-api.pages.dev/v1/currencies/`
+- **Historical Rates Base URL**: `https://{YYYY-MM-DD}.currency-api.pages.dev/v1/currencies/` (e.g. `https://2026-07-22.currency-api.pages.dev/v1/currencies/`)
+- **Endpoint**: `egp.json`
 
 ---
 
-# Engineering Decisions
+## Continuous Integration (CI)
 
-Some notable implementation decisions include:
-
-* Clean Architecture to improve maintainability and scalability.
-* Repository Pattern to abstract data sources.
-* Offline-first behavior using Hive for a resilient user experience.
-* Freezed for immutable state modeling.
-* Feature-first organization for modular development.
-* Centralized dependency injection using get_it.
-* Generic ApiResult and Failure models to standardize error handling.
-* Parallel historical requests (`Future.wait`) to reduce perceived latency.
-* Comprehensive testing across business logic, state management, and UI.
+A GitHub Actions pipeline is configured in [.github/workflows/ci.yml](file:///.github/workflows/ci.yml). On every `push` and `pull_request` to `main` or `master`, the workflow automatically:
+1. Sets up stable Flutter SDK with dependency caching.
+2. Executes `flutter pub get`.
+3. Runs `flutter analyze` (failing build on lint issues).
+4. Runs `flutter test` (failing build on test failures).
 
 ---
 
-# Future Improvements
+## Testing
 
-Potential enhancements beyond the assessment scope include:
-
-* Currency search and filtering.
-* Favorites and pinned currencies.
-* Exchange rate alerts.
-* Multiple base currencies.
-* Interactive chart zoom and pan.
-* Period selection (7D, 30D, 90D, 1Y).
-* Automatic background synchronization.
-* Performance monitoring and analytics.
-* Accessibility improvements.
-* Material 3 dynamic color support.
+The project includes **49 passing unit, cubit, and widget tests**:
+- **Domain & Data Unit Tests**: Verification of `ExceptionMapper`, data mappers, and repository chunked batching (`_fetchInBatches`).
+- **Cubit Tests**: Full state transition coverage for `RatesCubit` and `DetailCubit` (loading, success, error, empty, range selection).
+- **Widget Tests**: Testing `RatesListScreen`, `RateDetailScreen`, `RateDetailChartSkeleton`, `ChartRangeSelector`, `RateChangeBadge`, and `SplashScreen`.
 
 ---
 
-# License
+## AI Usage Log
 
-This project is intended for technical assessment and educational purposes.
-
----
-
-## Author
-
-Developed with a focus on production-ready Flutter architecture, clean code practices, maintainability, and scalability.
+This repository includes a comprehensive [AI_USAGE.md](file:///AI_USAGE.md) log at the root directory. It documents the prompt, AI model output summary, commit reference hash, and engineering decisions for every phase of development.
