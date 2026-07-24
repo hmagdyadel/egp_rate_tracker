@@ -93,7 +93,7 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Model returned:** Scoped `ScaleTransition` pulse animation and primary accent border exclusively to active USD cards (`rate.code == 'USD'`). Updated `RatesListSkeleton` dummy data to use 5 distinct currency codes (`USD`, `EUR`, `GBP`, `SAR`, `JPY`) and disabled pulse/border styling when `Skeletonizer.maybeOf(context)?.enabled == true` so skeleton loading items render clean and still. 49 unit/widget tests pass, 0 analysis issues.
 **Decision:** Edited — User pointed out that all skeleton loading cards were pulsing with USD borders during fetch; resolved by scoping pulse and primary borders strictly to loaded USD cards (`!isSkeleton && rate.code == 'USD'`).
 
-### Documentation — README.md rewrite — 2026-07-24 (commit `e49a974`)
+### Documentation — README.md rewrite — 2026-07-24 (commit `4f9ca33`)
 **Prompt:** Write (or fully rewrite) README.md at the repo root to be a complete, professional, and clear document describing this project...
 **Model returned:** Rewrote `README.md` with complete sections covering project overview, screenshot placeholders, features, Clean Architecture layer breakdown, real tech stack from `pubspec.yaml`, project directory tree, getting started commands, exact verified `ApiConstants` URLs (`https://latest.currency-api.pages.dev/v1/currencies/`), CI pipeline overview, verified 49 passing test count, and `AI_USAGE.md` reference.
 **Decision:** Edited — Verified `ApiConstants` values in `api_constants.dart` and ran `flutter test` fresh to ensure exact API base URLs and real passing test count (49) were reflected in the final document.
