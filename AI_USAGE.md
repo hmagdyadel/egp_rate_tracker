@@ -88,7 +88,7 @@ Each entry records: the prompt, a short summary of what the model returned, and 
 **Model returned:** Enhanced `RateListItem` with smooth entrance `FadeTransition` & `SlideTransition` animations, `AnimatedSwitcher` price update fade-in/out transitions, and custom primary highlight styling for the USD card.
 **Decision:** Edited — User requested refining the transition into a continuous repeating breathing/pulse effect where the card container scales smoothly down to `0.97` and returns to `1.0` in a continuous loop (`_pulseController.repeat(reverse: true)` using `Curves.easeInOut`).
 
-### Rate Card USD Pulse Scoping & Skeleton Alignment — 2026-07-24 (commit `0b4c4dc`)
+### Rate Card USD Pulse Scoping & Skeleton Alignment — 2026-07-24 (commit `9608df5`)
 **Prompt:** now the pulse down for all card i need only for the dollar card. (Also noted: in loading state all cards were pulsing and showing USD primary borders, mismatched from actual data layout).
 **Model returned:** Scoped `ScaleTransition` pulse animation and primary accent border exclusively to active USD cards (`rate.code == 'USD'`). Updated `RatesListSkeleton` dummy data to use 5 distinct currency codes (`USD`, `EUR`, `GBP`, `SAR`, `JPY`) and disabled pulse/border styling when `Skeletonizer.maybeOf(context)?.enabled == true` so skeleton loading items render clean and still. 49 unit/widget tests pass, 0 analysis issues.
 **Decision:** Edited — User pointed out that all skeleton loading cards were pulsing with USD borders during fetch; resolved by scoping pulse and primary borders strictly to loaded USD cards (`!isSkeleton && rate.code == 'USD'`).
